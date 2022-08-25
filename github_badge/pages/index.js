@@ -1,6 +1,14 @@
+import { Icon } from "@iconify/react"
+import { useEffect, useState } from "react"
 
+export default function Home({ props }) {
 
-export default function Home() {
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    setUser(props.name)
+  }, [props])
+
   return (
     //HEADER
     <div className="w-full flex flex-col">
@@ -8,7 +16,7 @@ export default function Home() {
         <h2 className="text-2xl text-white">devfinder</h2>
         <div className=" text-white gap-2 items-center flex justify-center">
           <h2>LIGHT</h2>
-          <h2>ICO</h2>
+          <Icon icon="bxs:sun" className="w-5 h-5" />
         </div>
       </div>
       <div className="flex justify-center items-center rounded-lg mx-6 mt-12 bg-white/10">
@@ -19,11 +27,58 @@ export default function Home() {
               </svg>
           </button>
       </div>
-    //CARD
-      <div className="bg-white/10 min-h-[500px] flex flex-col rounded-lg mx-6 p-2">
+      <div className="bg-white/10 min-h-[500px] mt-6 flex flex-col rounded-lg mx-6 p-2">
+        <div className="flex w-full items-center gap-3">
+          <img src="https://avatars.githubusercontent.com/u/100877513?v=4" className="m-2 rounded-full w-20 h-20" />
+          <div className="flex text-white justify-between flex-col">
+            <h2>{user}</h2>
+            <h3 className=" text-blue-500">@Qolors</h3>
+            <h3 className="text-sm">Joined 25 Jan 2021</h3>
+          </div>
+        </div>
+        <p className=" my-6 font-thin text-white/80 break-words indent-2 text-left mx-2">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+        Blandit massa enim nec dui.
+        </p>
+        <div className="mx-2 px-6 py-8 flex bg-[#141c2f] rounded-lg justify-between items-center">
+          <div className="flex flex-col items-center gap-2">
+            <h3 className="text-white/80">Repos</h3>
+            <h2 className="text-white font-bold">8</h2>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <h3 className="text-white/80">Followers</h3>
+            <h2 className="text-white font-bold">2938</h2>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <h3 className="text-white/80">Following</h3>
+            <h2 className="text-white font-bold">9</h2>
+          </div>
+        </div>
+        <ul className="list-none flex text-medium flex-col gap-2 mx-2 my-6 text-white">
+          <li><span className="flex items-center gap-4"><Icon icon="bx:map" /><h3>Ann Arbor</h3></span></li>
+          <li><span className="flex items-center gap-4"><Icon icon="entypo:link" /><h3>www.mcgowen.work</h3></span></li>
+          <li><span className="flex items-center gap-4"><Icon icon="ant-design:twitter-outlined" /><h3>@qolorscode</h3></span></li>
+          <li><span className="flex items-center gap-4"><Icon icon="bi:building" /><h3>Google Inc.</h3></span></li>
+        </ul>
 
       </div>
     </div>
     
   )
+}
+
+
+export async function getServerSideProps() {
+  const url = `https://api.github.com/users/qolors`
+  const result = await fetch(url).then(res => res.json())
+
+  if (result.length) {
+    return {
+      props: {
+        name: result.login,
+      },
+    }
+  }
+
 }
