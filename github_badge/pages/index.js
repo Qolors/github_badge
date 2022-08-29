@@ -1,9 +1,10 @@
-import { Icon } from "@iconify/react"
-import { useEffect, useState } from "react"
+import { Icon } from "@iconify/react";
+import { useEffect, useState } from "react";
+import Barchart from "../components/barchart";
 
 export default function Home() {
 
-  
+  const [techStack, setTechStack] = useState({});
 
   const [formInfo, setFormInfo] = useState("");
 
@@ -53,7 +54,7 @@ export default function Home() {
           }
         }
       }
-      console.log(libraryStack)
+      setTechStack(libraryStack);
       setStars(starCounter);
       setLoading(false)
     };
@@ -120,6 +121,7 @@ export default function Home() {
         </>
         ))}
       </div>
+      <Barchart propData={techStack} />
     </div>
   
     
