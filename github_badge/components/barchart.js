@@ -1,35 +1,74 @@
+import { PieChart } from "react-minimal-pie-chart";
+import { useState, useEffect } from "react";
+import React from "react";
 
+const Barchart = ({ propData }) => {
 
-const Barchart = ({ propData, lines }) => {
+        const [masterData, setMasterData] = useState([]);
 
-        const cleanData = []
-        const gotData = propData;
+        const [summedLines, setSummedLines] = useState(0);
 
-        for (var key of Object.keys(gotData)) {
-            let d = {
-                language: key,
-                amount: gotData[key],
-                percentage: Math.round((gotData[key] / lines) * 100)
-            };
-
-            cleanData.push(d);
+        //Label Customization
+        const defaultLabels = {
+            fontSize: '4px',
         }
 
-        console.log(cleanData);
+
+        //INITIAL DATA CLEANING
+
+        useEffect(() => {
+
+            const cleanData = [];
+
+            var i = 0;
+            var summed = 0;
+            
+
+            var sizeOfList = Object.keys(propData).length;
+            console.log(sizeOfList);
+
+            for (var key of Object.keys(propData)) {
+
+                if (i < sizeOfList ) {i++};
+                var randomColor = Math.floor(Math.random()*16777215).toString(16);
+                let d = {
+                    title: key,
+                    value: propData[key],
+                    color: `#${randomColor}`
+                };
+
+                summed = summed + propData[key];
+                cleanData.push(d);
+
+                if (i === (sizeOfList - 1)) {
+                    setMasterData(cleanData);
+                    setSummedLines(summed);
+                }
+            }
+        }, [])
+        
 
         return (
-          <div className="flex text-white mt-6 mb-6 rounded-lg flex-col gap-8 mx-6 bg-white/10 p-2">
-            {cleanData.map((lang) => {
-                
-                return (
-                    <div key={lang.language} className="w-full flex gap-6 items-center">
-                        <div className="flex w-[75px]">{lang.language}</div>
-                        <div className="bg-teal-400 p-1 justify-center items-center flex rounded-md text-black font-bold" style={{ width: `${lang.percentage}%` }}>{lang.percentage}%</div>
+            <div className="mt-6 text-stone-800 dark:text-white/80 mb-6 bg-white/20 p-2 w-full flex flex-col justify-center items-center">
+                <h2 className="font-bold text-2xl">Lifetime Languages</h2>
+                <h3 className="text-medium">Based on {summedLines} lines of code </h3>
+                <div className="flex mt-6">
+                    <div className="flex flex-col gap-2">
+                        {masterData.map(p => {
+                            return (
+                                <span key={p.value} className="flex gap-2 items-center">
+                                    <div className="block w-[20px] h-[20px]" style={{ backgroundColor: `${p.color}` }}></div>
+                                    <h2>{p.title}</h2>
+                                </span>
+                            )
+                        })}
                     </div>
-                )
-            })}
-          </div>
+                    <div className="items-center justify-center flex flex-col text-stone-800 dark:text-white/80 font-bold">
+                        {masterData && <PieChart radius={40} labelPosition={50} labelStyle={defaultLabels} label={({ dataEntry }) => Math.round(dataEntry.percentage)} animate={true} data={masterData} />}
+                    </div>
+                </div>
+            </div>
         )
-    }
+}
 
 export default Barchart;
