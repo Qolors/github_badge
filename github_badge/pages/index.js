@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 import Barchart from "../components/barchart";
 import Loader from "../components/loader";
+import NoFind from "../components/nofind";
 
 export default function Home() {
 
@@ -12,6 +13,8 @@ export default function Home() {
   const [formInfo, setFormInfo] = useState("");
 
   const [user, setUser] = useState("qolors");
+
+  const [noresult, setNoResult] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -45,8 +48,13 @@ export default function Home() {
         headers: {
           Authorization: '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',
         },
-      }).then(res => res.json())
-      setData(result)
+      })
+      if (!result.ok) {
+        setLoading(false);
+        return setNoResult(true);
+      }
+      let foundData = await result.json();
+      setData(foundData)
 
       const reposUrl = `https://api.github.com/users/${user}/repos`
       const reposResult = await fetch(reposUrl, {
@@ -109,6 +117,7 @@ export default function Home() {
           </button>
       </div>
       <div className="dark:bg-white/10 bg-white/30 min-h-[500px] mt-6 flex flex-col rounded-lg mx-6 p-2">
+        {!loading && noresult && <NoFind />}
         {loading ? (<Loader />) : ( data && (
         <>
         <div className="flex w-full items-center gap-3">

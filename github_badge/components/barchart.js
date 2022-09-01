@@ -18,6 +18,10 @@ const Barchart = ({ propData }) => {
 
         useEffect(() => {
 
+            function compare (a, b) {
+                return  b.value - a.value;
+            }
+
             const cleanData = [];
 
             var i = 0;
@@ -25,7 +29,6 @@ const Barchart = ({ propData }) => {
             
 
             var sizeOfList = Object.keys(propData).length;
-            console.log(sizeOfList);
 
             for (var key of Object.keys(propData)) {
 
@@ -41,15 +44,17 @@ const Barchart = ({ propData }) => {
                 cleanData.push(d);
 
                 if (i === (sizeOfList - 1)) {
-                    setMasterData(cleanData);
+                    setMasterData(cleanData.sort(compare));
                     setSummedLines(summed);
                 }
             }
+            
         }, [])
+
         
 
         return (
-            <div className="mt-6 text-stone-800 dark:text-white/80 mb-6 bg-white/20 p-2 w-full flex flex-col justify-center items-center">
+            <div className="mt-6 text-stone-800 dark:text-white/80 mb-6 bg-white/10 p-2 w-full flex flex-col justify-center items-center">
                 <h2 className="font-bold text-2xl">Lifetime Languages</h2>
                 <h3 className="text-medium">Based on {summedLines} lines of code </h3>
                 <div className="flex mt-6">
@@ -64,7 +69,7 @@ const Barchart = ({ propData }) => {
                         })}
                     </div>
                     <div className="items-center justify-center flex flex-col text-stone-800 dark:text-white/80 font-bold">
-                        {masterData && <PieChart radius={40} labelPosition={50} labelStyle={defaultLabels} label={({ dataEntry }) => Math.round(dataEntry.percentage)} animate={true} data={masterData} />}
+                        {masterData && <PieChart radius={50} labelPosition={50} labelStyle={defaultLabels} label={({ dataEntry }) => Math.round(dataEntry.percentage)} animate={true} data={masterData} />}
                     </div>
                 </div>
             </div>
